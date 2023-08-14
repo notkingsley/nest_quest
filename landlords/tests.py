@@ -1,11 +1,10 @@
-from django.test import TestCase
-from users.models import User
 from django.urls import reverse
 from rest_framework import status
-from .serializers import LandlordSerializer, PhoneNumberSerializer
 from rest_framework.test import APITestCase
 
+from users.models import User
 from .models import Landlord
+from .serializers import LandlordSerializer, PhoneNumberSerializer
 
 class LandlordTests(APITestCase):
     
@@ -16,20 +15,17 @@ class LandlordTests(APITestCase):
 
     def test_create(self):
         url = reverse("create_landlord")
-        landlord = Landlord.objects.create(
-            user = self.user,
-            phone_number = "07062617961",
-            address = "oau",
-            )
         data = {
-            "user": self.user,
-            "phone_number": "07062617961",
-            "address": "oau",
+            "user": self.user.id,
+            "phone_number": "08012345689",
+            "address": "address",
         }
-        response = self.client.post(url, data, json=format)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        response = self.client.post(url, data)
         self.assertEqual(Landlord.objects.count(), 1)
-        self.assertEqual(Landlord.objects.get().address, "oau")
+        self.assertEqual(Landlord.objects.get().address, "address")
+        self.assertEqual(Landlord.objects.get().phone_number, "08012345689")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
 
     def test_get_landlord(self):
         landlord = Landlord.objects.create(
@@ -48,16 +44,19 @@ class LandlordTests(APITestCase):
             user = self.user,
             phone_number = "07062617961",
             address = "oau",
-            )
+        )
         data = {
-            'email': 'janedoe@exampldfd.com' 
-            }
+            "address": "new address",
+            "phone_number": "08012345689",
+        }
         response = self.client.patch(url, data)
-        serializer = LandlordSerializer(landlord, data=data, partial=True)
-        self.assertTrue(serializer.is_valid())
-        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(Landlord.objects.count(), 1)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Landlord.objects.get().address, "new address")
+        self.assertEqual(Landlord.objects.get().phone_number, "08012345689")
+
 
     def test_validate_phone_number(self):
-        phone_number = '08012345678'
+        phone_number = '07063234567'
         validated_phone_number = PhoneNumberSerializer().validate_phone_number(phone_number)
         self.assertEqual(validated_phone_number, phone_number)

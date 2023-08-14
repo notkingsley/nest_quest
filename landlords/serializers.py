@@ -10,7 +10,8 @@ class PhoneNumberSerializer(serializers.CharField):
         if len(Phone_number) != 11:
             raise serializers.ValidationError('Phone number must have 11 digits.')
         
-        common_prefixes = ['070', '080', '090', '081', '071', '072', '073', '074', '075', '076', '077', '078', '079']
+        
+        common_prefixes = ['070', '071', '080', '081', '090', '091']
         if not any(Phone_number.startswith(prefix) for prefix in common_prefixes):
             raise serializers.ValidationError('Invalid phone number.')
 
@@ -21,5 +22,8 @@ class LandlordSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Landlord
-        fields = ('user', 'address', 'phone_number')
+        fields = ('address', 'phone_number')
+        extra_kwargs = {
+            'phone_number': {'validators': [PhoneNumberSerializer.validate_phone_number]}
+        }
      

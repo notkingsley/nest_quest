@@ -17,6 +17,7 @@ def create_landlord(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
 @api_view(['GET', 'PATCH'])
 def landlord_info(request):
     landlord = get_object_or_404(Landlord, user=request.user)
