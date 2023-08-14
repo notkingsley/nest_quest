@@ -72,13 +72,14 @@ class Listing(models.Model):
 		"Distance in meters",
 		validators= [ MaxValueValidator(
 			Max_distance,
-			f"Rent must be at least {Max_distance}",)],
+			f"distane must not exceed 24 {Max_distance}",)],
 		blank=False, 
 		null=True,
 	)
 		
 	utilities = models.CharField(
-		max_length=255, 
+		"list the utilities in your house",
+		max_length=500, 
 		null=True,
 	)
 	is_availaible = models.BooleanField(
@@ -86,7 +87,7 @@ class Listing(models.Model):
 		default= True,
 	)
 	is_active = models.BooleanField(
-		"is the listing sitll active",
+		"is your list sitll active",
 		default= True,
 	)
 
