@@ -7,17 +7,21 @@ from .models import Review
 from .permissions import IsOwnerOrReadOnly
 from .serializers import ReviewSerializer
 
-
 class NewReviewView(generics.CreateAPIView):
 	"""
 	Create a new review, requires authentication as a user
 
-	TODO: disallow landlords from reviewing their own listings
 	"""
 	permission_classes = [permissions.IsAuthenticated]
 	serializer_class = ReviewSerializer
 	
 	def perform_create(self, serializer):
+		listing = get_object_or_404(Listing, pk= self.kwargs.get("pk"))
+		if listing.landlord == self.request.user:
+			"""check if the user is same as the landlord who made the list"""
+			raise ReviewSerializer.ValidationError(
+				{"reviewer": "You cannot review your own listing."}
+			)
 		serializer.save(
 			reviewer= self.request.user,
 			listing= get_object_or_404(Listing, pk= self.kwargs.get("pk")),
