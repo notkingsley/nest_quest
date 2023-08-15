@@ -6,8 +6,8 @@ from django.core.validators import RegexValidator
 
 class Landlord(models.Model):
     phone_regex = RegexValidator(
-        regex=r'^0[789][01]{9}$',
-        message='Phone number must be entered in the format: "070xxxxxxxx". 11 digits allowed.'
+        regex=r'^0[789][0]{9}$',
+        message='Phone number must start in this format: "070, o71, 080, 081, 090, 091". 11 digits allowed.'
     )
     user = models.OneToOneField(User, primary_key=True, on_delete=models.CASCADE)
     address = models.CharField(max_length=50)

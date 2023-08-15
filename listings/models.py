@@ -69,26 +69,26 @@ class Listing(models.Model):
 
 	
 	distance_to_gate = models.IntegerField(
-		"Distance in meters",
+		"Distance in kilometer",
 		validators= [ MaxValueValidator(
 			Max_distance,
 			f"distane must not exceed 24 {Max_distance}",)],
-		blank=False, 
-		null=True,
+		blank=False,
+		default= 10
 	)
 		
 	utilities = models.CharField(
 		"list the utilities in your house",
 		max_length=500, 
-		null=True,
+		default= None
 	)
 	is_availaible = models.BooleanField(
 		"is the listing available",
-		default= True,
+		default= True
 	)
 	is_active = models.BooleanField(
 		"is your list sitll active",
-		default= True,
+		default= True
 	)
 
 	class Meta:
